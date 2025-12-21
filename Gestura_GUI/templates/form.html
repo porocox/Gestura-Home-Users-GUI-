@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Booking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f2f2f7;
+            color: #000;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 16px;
+            padding-top: 60px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 17px;
+            color: #8e8e93;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .form-section {
+            padding: 16px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 15px;
+            color: #3c3c43;
+            margin-bottom: 4px;
+            margin-left: 12px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 17px;
+            border: none;
+            background-color: #f2f2f7;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .form-control:focus {
+            background-color: #e5e5ea;
+        }
+
+        .form-select {
+            position: relative;
+            width: 100%;
+        }
+
+        .form-select select {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 17px;
+            border: none;
+            background-color: #f2f2f7;
+            border-radius: 10px;
+            -webkit-appearance: none;
+            appearance: none;
+            outline: none;
+        }
+
+        .form-select::after {
+            content: '⌄';
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%) rotate(180deg);
+            color: #8e8e93;
+            pointer-events: none;
+            font-size: 20px;
+        }
+
+        .date-picker {
+            display: flex;
+            gap: 8px;
+        }
+
+        .date-picker .form-select {
+            flex: 1;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .checkbox-container input {
+            margin-right: 12px;
+            width: 22px;
+            height: 22px;
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: #f2f2f7;
+            border-radius: 6px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .checkbox-container input:checked {
+            background-color: #007aff;
+        }
+
+        .checkbox-container input:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+        }
+
+        .checkbox-container label {
+            font-size: 17px;
+            color: #000;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            font-size: 17px;
+            font-weight: 600;
+            text-align: center;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #007aff;
+            color: white;
+            margin-top: 32px;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056d3;
+        }
+
+        .btn-primary:disabled {
+            background-color: #8e8e93;
+            cursor: not-allowed;
+        }
+
+        .summary-card {
+            padding: 16px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .summary-label {
+            color: #3c3c43;
+            font-size: 17px;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            font-size: 17px;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e5ea;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007aff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #34c759;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+            color: white;
+        }
+
+        .success-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .success-subtitle {
+            color: #8e8e93;
+            font-size: 17px;
+        }
+
+        .error-message {
+            color: #ff3b30;
+            font-size: 13px;
+            margin-top: 4px;
+            margin-left: 12px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Pre-Booking</h1>
+            <p>Reserve your spot now and get early access</p>
+        </div>
+
+        <form id="booking-form">
+            <div class="card">
+                <div class="form-section">
+                    <h2 class="section-title">Personal Information</h2>
+                    <div class="form-group">
+                        <label for="fullName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="fullName" placeholder="John Doe" required>
+                        <div class="error-message" id="fullName-error">Please enter your full name</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="john@example.com" required>
+                        <div class="error-message" id="email-error">Please enter a valid email address</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="phone" placeholder="+1 (555) 000-0000" required>
+                        <div class="error-message" id="phone-error">Please enter a valid phone number</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="form-section">
+                    <h2 class="section-title">Booking Details</h2>
+                    <div class="form-group">
+                        <label for="product" class="form-label">Product</label>
+                        <div class="form-select">
+                            <select id="product" required>
+                                <option value="" disabled selected>Select a product</option>
+                                <option value="premium">Premium Package - $99</option>
+                                <option value="standard">Standard Package - $59</option>
+                                <option value="basic">Basic Package - $29</option>
+                            </select>
+                        </div>
+                        <div class="error-message" id="product-error">Please select a product</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Preferred Date</label>
+                        <div class="date-picker">
+                            <div class="form-select">
+                                <select id="month" required>
+                                    <option value="" disabled selected>Month</option>
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </select>
+                            </div>
+                            <div class="form-select">
+                                <select id="day" required>
+                                    <option value="" disabled selected>Day</option>
+                                </select>
+                            </div>
+                            <div class="form-select">
+                                <select id="year" required>
+                                    <option value="" disabled selected>Year</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2024">2024</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="error-message" id="date-error">Please select a valid date</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity" class="form-label">Quantity</label>
+                        <div class="form-select">
+                            <select id="quantity" required>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="form-section">
+                    <h2 class="section-title">Payment Method</h2>
+                    <div class="form-group">
+                        <label for="cardNumber" class="form-label">Card Number</label>
+                        <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                        <div class="error-message" id="cardNumber-error">Please enter a valid card number</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardName" class="form-label">Cardholder Name</label>
+                        <input type="text" class="form-control" id="cardName" placeholder="John Doe" required>
+                        <div class="error-message" id="cardName-error">Please enter the cardholder name</div>
+                    </div>
+                    <div class="date-picker">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="expMonth" class="form-label">Expiry Month</label>
+                            <div class="form-select">
+                                <select id="expMonth" required>
+                                    <option value="" disabled selected>MM</option>
+                                    <option value="01">01</option>
+                                    <option value="02">02</option>
+                                    <option value="03">03</option>
+                                    <option value="04">04</option>
+                                    <option value="05">05</option>
+                                    <option value="06">06</option>
+                                    <option value="07">07</option>
+                                    <option value="08">08</option>
+                                    <option value="09">09</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="expYear" class="form-label">Expiry Year</label>
+                            <div class="form-select">
+                                <select id="expYear" required>
+                                    <option value="" disabled selected>YY</option>
+                                    <option value="23">2023</option>
+                                    <option value="24">2024</option>
+                                    <option value="25">2025</option>
+                                    <option value="26">2026</option>
+                                    <option value="27">2027</option>
+                                    <option value="28">2028</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="cvv" class="form-label">CVV</label>
+                            <input type="text" class="form-control" id="cvv" placeholder="123" maxlength="3" required>
+                            <div class="error-message" id="cvv-error">Please enter a valid CVV</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="summary-card">
+                    <h2 class="section-title">Order Summary</h2>
+                    <div class="summary-item">
+                        <span class="summary-label">Product</span>
+                        <span class="summary-value" id="summary-product">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Quantity</span>
+                        <span class="summary-value" id="summary-quantity">1</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Preferred Date</span>
+                        <span class="summary-value" id="summary-date">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Subtotal</span>
+                        <span class="summary-value" id="summary-subtotal">$0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Tax</span>
+                        <span class="summary-value" id="summary-tax">$0</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <span id="summary-total">$0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checkbox-container">
+                <input type="checkbox" id="terms" required>
+                <label for="terms">I agree to the Terms and Conditions</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="submit-btn">Complete Pre-Booking</button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Processing your pre-booking...</p>
+        </div>
+
+        <div class="success-message" id="success">
+            <div class="success-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+            <h2 class="success-title">Pre-Booking Confirmed!</h2>
+            <p class="success-subtitle">We've sent a confirmation email to your inbox.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up days dropdown based on month selection
+            const monthSelect = document.getElementById('month');
+            const daySelect = document.getElementById('day');
+            const yearSelect = document.getElementById('year');
+            const quantitySelect = document.getElementById('quantity');
+            const productSelect = document.getElementById('product');
+            
+            // Format credit card number
+            const cardNumberInput = document.getElementById('cardNumber');
+            cardNumberInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                let matches = value.match(/\d{4,16}/g);
+                let match = matches && matches[0] || '';
+                let parts = [];
+                
+                for (let i = 0, len = match.length; i < len; i += 4) {
+                    parts.push(match.substring(i, i + 4));
+                }
+                
+                if (parts.length) {
+                    e.target.value = parts.join(' ');
+                } else {
+                    e.target.value = value;
+                }
+            });
+            
+            // Format CVV to only accept numbers
+            const cvvInput = document.getElementById('cvv');
+            cvvInput.addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+            });
+            
+            // Update days dropdown when month or year changes
+            function updateDays() {
+                const month = parseInt(monthSelect.value);
+                const year = parseInt(yearSelect.value);
+                
+                if (!month || !year) return;
+                
+                // Clear previous options
+                daySelect.innerHTML = '<option value="" disabled selected>Day</option>';
+                
+                // Get days in month
+                const daysInMonth = new Date(year, month, 0).getDate();
+                
+                // Add day options
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i;
+                    daySelect.appendChild(option);
+                }
+            }
+            
+            monthSelect.addEventListener('change', updateDays);
+            yearSelect.addEventListener('change', updateDays);
+            
+            // Update order summary
+            function updateSummary() {
+                const product = productSelect.value;
+                const quantity = parseInt(quantitySelect.value);
+                const month = monthSelect.options[monthSelect.selectedIndex]?.text;
+                const day = daySelect.value;
+                const year = yearSelect.value;
+                
+                let productName = '-';
+                let unitPrice = 0;
+                
+                if (product === 'premium') {
+                    productName = 'Premium Package';
+                    unitPrice = 99;
+                } else if (product === 'standard') {
+                    productName = 'Standard Package';
+                    unitPrice = 59;
+                } else if (product === 'basic') {
+                    productName = 'Basic Package';
+                    unitPrice = 29;
+                }
+                
+                const subtotal = unitPrice * quantity;
+                const tax = subtotal * 0.08;
+                const total = subtotal + tax;
+                
+                document.getElementById('summary-product').textContent = productName;
+                document.getElementById('summary-quantity').textContent = quantity;
+                document.getElementById('summary-date').textContent = 
+                    month && day && year ? `${month} ${day}, ${year}` : '-';
+                document.getElementById('summary-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+                document.getElementById('summary-tax').textContent = `$${tax.toFixed(2)}`;
+                document.getElementById('summary-total').textContent = `$${total.toFixed(2)}`;
+            }
+            
+            productSelect.addEventListener('change', updateSummary);
+            quantitySelect.addEventListener('change', updateSummary);
+            monthSelect.addEventListener('change', updateSummary);
+            daySelect.addEventListener('change', updateSummary);
+            yearSelect.addEventListener('change', updateSummary);
+            
+            // Form submission
+            const form = document.getElementById('booking-form');
+            const submitBtn = document.getElementById('submit-btn');
+            const loading = document.getElementById('loading');
+            const success = document.getElementById('success');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Reset error messages
+                document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+                
+                let isValid = true;
+                
+                // Validate form fields
+                const fullName = document.getElementById('fullName');
+                const email = document.getElementById('email');
+                const phone = document.getElementById('phone');
+                const product = document.getElementById('product');
+                const month = document.getElementById('month');
+                const day = document.getElementById('day');
+                const year = document.getElementById('year');
+                const cardNumber = document.getElementById('cardNumber');
+                const cardName = document.getElementById('cardName');
+                const expMonth = document.getElementById('expMonth');
+                const expYear = document.getElementById('expYear');
+                const cvv = document.getElementById('cvv');
+                const terms = document.getElementById('terms');
+                
+                if (!fullName.value.trim()) {
+                    document.getElementById('fullName-error').style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (!email.value.trim() || !validateEmail(email.value)) {
+                    document.getElementById('email-error').style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (!phone.value.trim()) {
+                    document.getElementById('phone-error').style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (!product.value) {
+                    document.getElementById('product-error').style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (!month.value || !day.value || !year.value) {
+                    document.getElementById('date-error').style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (!cardNumber.value.trim() || cardNumber.value.trim().length < 19) {
+                    document.getElementById('cardNumber-error').style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (!cardName.value.trim()) {
+                    document.getElementById('cardName-error').style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (!cvv.value.trim() || cvv.value.trim().length < 3) {
+                    document.getElementById('cvv-error').style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (!terms.checked) {
+                    isValid = false;
+                }
+                
+                if (!isValid) return;
+                
+                // Show loading
+                form.style.display = 'none';
+                loading.style.display = 'block';
+                
+                // Simulate API call
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                    success.style.display = 'block';
+                    
+                    // In a real app, you would send data to your server here
+                    console.log('Form submitted:', {
+                        fullName: fullName.value,
+                        email: email.value,
+                        phone: phone.value,
+                        product: product.value,
+                        date: `${year.value}-${month.value}-${day.value}`,
+                        quantity: quantitySelect.value,
+                        cardNumber: cardNumber.value,
+                        cardName: cardName.value,
+                        expMonth: expMonth.value,
+                        expYear: expYear.value,
+                        cvv: cvv.value
+                    });
+                }, 2000);
+            });
+            
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+        });
+    </script>
+</body>
+</html>

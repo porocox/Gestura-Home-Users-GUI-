@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestura Support</title>
+  <link rel="icon" type="image/png" href="../static/assets/fav.ico">
+  <style>
+    /* Global Styles */
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      background: #ffffff;
+      color: #1c1c1e;
+      line-height: 1.6;
+    }
+    a {
+      color: #007aff;
+      text-decoration: none;
+    }
+    /* Navbar with Liquid Glass Effect */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* Liquid Glass: Base Transmission - Light variant */
+      background: radial-gradient(
+        140% 140% at 50% 0%, 
+        rgba(255, 255, 255, 0.8) 0%, 
+        rgba(255, 255, 255, 0.4) 100%
+      );
+      /* Optical Refraction: Heavy blur + Saturation for 'wet' look */
+      backdrop-filter: blur(40px) saturate(120%);
+      -webkit-backdrop-filter: blur(40px) saturate(120%);
+      /* Surface Tension & Specularity: Complex shadows for depth */
+      box-shadow: 
+        /* Deep ambient occlusion */
+        0 4px 20px rgba(0, 0, 0, 0.08),
+        /* Top rim light (reflection) */
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.6),
+        /* Subtle glass border */
+        inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+      /* Chromatic Boundary */
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      z-index: 1000;
+      transition: height 0.3s ease;
+    }
+    .navbar img {
+      height: 80px;
+      transition: height 0.3s ease;
+      object-fit: contain;
+    }
+    /* Back button in navbar */
+    .back-btn {
+      position: absolute;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 1rem;
+      background: none;
+      border: none;
+      color: #007aff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    .back-btn:hover { color: #0051a8; }
+    .back-btn:active { color: #004080; }
+    .back-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+    /* Hero / Banner */
+    .hero {
+      width: 100%;
+      margin-top: 70px;
+      text-align: center;
+    }
+    .hero img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    /* FAQ Section */
+    .faq {
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 0 15px;
+    }
+   
+    .faq h2 {
+      text-align: center;
+      font-size: 1.9rem;
+      font-weight: 600;
+      margin-bottom: 25px;
+    }
+    .faq details {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .faq summary {
+      padding: 20px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      list-style: none;
+    }
+    .faq details[open] summary {
+      background-color: #f2f2f7;
+    }
+    .faq p {
+      padding: 0 20px 20px;
+      font-size: 1rem;
+      color: #3c3c4399;
+    }
+    /* iOS-style Link Button */
+    .link-button {
+      display: inline-block;
+      font-weight: 600;
+      color: #007aff;
+      text-decoration: none;
+      padding: 0;
+      margin: 5px 0 0 0;
+      transition: color 0.2s ease;
+    }
+    .link-button:hover { color: #0051a8; }
+    .link-button:active { color: #004080; }
+    /* Contact Form */
+    .contact-form {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 30px 25px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 25px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+    }
+    .contact-form h2 {
+      text-align: center;
+      font-size: 1.9rem;
+      font-weight: 600;
+      margin-bottom: 25px;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 15px 20px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 15px;
+      font-size: 1rem;
+      background: #f2f2f7;
+      box-sizing: border-box;
+      color: #1c1c1e;
+      transition: background 0.3s ease, outline 0.3s ease;
+    }
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      outline: 2px solid #007aff;
+      background: #fff;
+    }
+    .contact-form button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      background: #007aff;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .contact-form button:hover { background: #0051a8; transform: translateY(-2px); }
+    /* Note style - small font */
+    .form-note {
+      font-size: 0.8rem; /* Small font */
+      color: #868686;    /* Red color for emphasis */
+      text-align: center;
+      margin-top: 12px;
+      font-weight: 500;
+    }
+    /* Smooth Details Animation */
+    details[open] p {
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 30px 15px;
+      font-size: 0.9rem;
+      color: #3c3c4399;
+    }
+    .email-support {
+      background: none;
+      border: none;
+      color: #007aff;
+      font-weight: 200;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    /* Modal Overlay */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal {
+      background: #fff;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      overflow: hidden;
+      animation: fadeIn 0.3s ease;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f5f5f7;
+      padding: 12px 16px;
+      font-weight: 600;
+    }
+    .modal-header button {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #007aff;
+    }
+    .modal-content {
+      padding: 20px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    /* Desktop Adjustments */
+    @media(min-width: 768px) {
+      .faq h2, .contact-form h2 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <button class="back-btn" onclick="backhome()" aria-label="Go Back">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+      </svg>
+      Back
+    </button>
+    <img id="navbar-logo" src="file:///E:/Internet%20Downloads/Gestura%20(2)-fotor-bg-remover-20250908124430.png" alt="Gestura Logo">
+  </div>
+  <!-- Hero / Banner -->
+  <div class="hero">
+    <img src="file:///E:/Internet%20Downloads/Untitled%20design%20(3).png" alt="Gestura Banner">
+  </div>
+  <!-- FAQ -->
+  <div class="faq">
+    <h2>Frequently Asked Questions</h2>
+    <details>
+      <summary>What Is Gestura?</summary>
+      <p>Gestura is a smart app that lets you control your computer using your hand movements — no mouse or keyboard needed! Just move your hands in front of your camera to do everyday tasks.</p>
+    </details>
+    <details>
+      <summary>Does Gestura support multiple Operating Systems?</summary>
+      <p>Yes, Gestura is compatible with most OSs. Check our compatibility list for more details.
+        <a href="javascript:void(0)" class="link-button" onclick="openModal()">Learn More</a>
+      </p>
+    </details>
+    <details>
+      <summary>Do I need any extra device?</summary>
+      <p>No! You only need your computer and a webcam. Gestura works with most built-in or USB cameras.</p>
+    </details>
+    <details>
+      <summary>Can I use Gestura without the internet?</summary>
+      <p>Yes! Once you’ve installed it, Gestura works completely offline.</p>
+    </details>
+    <details>
+      <summary>Is my camera always recording?</summary>
+      <p>No. Gestura doesn’t record or save any video. It only looks at your hand movements in real time — all safely inside your own computer.</p>
+    </details>
+    <details>
+      <summary>What should I do if Gestura is not detecting my gestures?</summary>
+      <p>Ensure your camera is properly configured and that there is adequate lighting. Refer to our troubleshooting guide for more tips.
+        <a href="https://example.com/troubleshooting" class="link-button" target="_blank">Learn More</a>
+      </p>
+    </details>
+    <details>
+      <summary>Can I suggest new features?</summary>
+      <p>Of course! We love new ideas. You can share your suggestions from inside the app or on our official website. Or <a href="https://example.com/troubleshooting" class="link-button" target="_blank">suggest</a> here.</p>
+    </details>
+  </div>
+  <!-- Contact Form -->
+  <div class="contact-form">
+    <h2>Have More Issues?</h2>
+    <p>Send your message from here</p>
+    <form action="mailto:porocoxindia@gmail.com" method="post" enctype="text/plain">
+      <input type="text" id="name" name="name" placeholder="Your Name" autocomplete="name" required>
+      <input type="email" id="email" name="email" placeholder="Your Email" autocomplete="email" required>
+      <textarea id="issue" name="issue" placeholder="Describe your issue..." rows="5" autocomplete="off" required></textarea>
+      <button type="submit">Submit</button>
+      <hr>
+      <p class="form-note"><strong>Note</strong>: Make Sure That You're Online When Submitting</p>
+    </form>
+  </div>
+<hr>
+  <!-- Footer -->
+  <footer>
+  &copy; 2025 Porocox. All rights reserved.
+  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=porocoxindia@gmail.com&su=Help%20with%20Gestura&body=Hi%20Gestura%20Team%2C%0A%0AI%20need%20assistance%20with..."
+     class="email-support"
+     style="color:#007aff; text-decoration:none;"
+     target="_blank">
+    <strong>Email Support</strong>
+  </a>
+</footer>
+<!-- Modal -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <div class="modal-header">
+        Gestura Installation
+        <button onclick="closeModal()">✖</button>
+      </div>
+      <div class="modal-content">
+        <h3>Gestura Works on All Devices</h3>
+        <table style="width:100%; border-collapse: collapse; text-align:center; margin:16px 0;">
+          <tr><th>OS</th><th>Works</th><th>Recommended</th></tr>
+          <tr><td>Windows</td><td>Yes</td><td>Windows 7 and up</td></tr>
+          <tr><td>macOS</td><td>Yes</td><td>Big Sur and up</td></tr>
+          <tr><td>Linux</td><td>Yes</td><td>Ubuntu 17.10 and up</td></tr>
+        </table>
+        <p style="margin-top:12px; font-size:0.9rem; color:#555;">
+          <hr>
+          <strong>Note:</strong> Gestura works on all devices with a webcam, but performance may vary.
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- Scripts -->
+  <script>
+    const navbarLogo = document.getElementById('navbar-logo');
+    window.addEventListener('scroll', () => {
+      navbarLogo.style.height = window.scrollY > 50 ? '50px' : '80px';
+    });
+    function backhome() { window.location.href = "index.html"; }
+    function email() { window.location.href = "email.html"; }
+    function openModal() {
+      document.getElementById("overlay").style.display = "flex";
+    }
+    function closeModal() {
+      document.getElementById("overlay").style.display = "none";
+    }
+  </script>
+</body>
+</html>

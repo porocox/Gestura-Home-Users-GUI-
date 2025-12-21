@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="Gestura Application Permissions and Terms of Service">
+   
+    <!-- Security: High-entropy CSP configuration -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        media-src 'self' blob:;
+        img-src 'self' data:;
+        script-src 'self' 'unsafe-inline'; 
+        style-src 'self' 'unsafe-inline';
+        connect-src 'self';
+        base-uri 'self';
+        form-action 'self';
+    ">
+
+    <title>Terms & Permissions | Gestura</title>
+    
+    <style>
+        :root {
+            --color-text-main: #ffffff;
+            --color-text-muted: rgba(255, 255, 255, 0.85); 
+            --color-success: #6ee7b7;
+            --color-warning: #fcd34d;
+            --color-error: #f87171;
+            --color-primary: #0a84ff;
+            --color-primary-hover: #0077e6;
+            
+            /* Animation Physics */
+            --anim-entrance: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            --anim-ui-expand: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* --- Reset & Base --- */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body {
+            height: 100%;
+            width: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--color-text-main);
+            overflow: hidden;
+            position: relative;
+            background-color: #000;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            opacity: 0;
+            animation: fadeInSimple 1.2s ease-out forwards;
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+
+        /* --- Background Media --- */
+        #background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            will-change: transform; 
+        }
+
+        /* --- The Liquid Glass Material Engine --- */
+        .LiquidGlass-effect {
+            /* Advanced Material Definition */
+            background: radial-gradient(
+                120% 100% at 50% 0%, 
+                rgba(50, 50, 50, 0.5) 0%, 
+                rgba(10, 10, 10, 0.75) 100%
+            );
+            backdrop-filter: blur(50px) saturate(180%);
+            -webkit-backdrop-filter: blur(50px) saturate(180%);
+            
+            /* Depth & Lighting Simulation */
+            box-shadow: 
+                0 -40px 80px rgba(0, 0, 0, 0.8),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+            
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* --- Main Layout --- */
+        .bottom-section {
+            width: 100%;
+            max-height: 85dvh; 
+            padding: 36px 24px;
+            padding-bottom: calc(32px + env(safe-area-inset-bottom, 20px));
+            
+            border-top-left-radius: 32px;
+            border-top-right-radius: 32px;
+            
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            
+            transform: translateY(110%);
+            animation: slideUp var(--anim-entrance) forwards;
+            animation-delay: 0.1s;
+            z-index: 10;
+            
+            /* Smooth scrolling for internal content */
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .bottom-section::-webkit-scrollbar { display: none; }
+
+        /* --- Typography --- */
+        .terms-title {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            margin-bottom: 24px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeUpItem var(--anim-entrance) forwards 0.3s;
+        }
+
+        .terms-text {
+            font-size: 15px;
+            color: var(--color-text-muted);
+            line-height: 1.6;
+            max-width: 90%;
+            text-align: center;
+            opacity: 0;
+            animation: fadeUpItem var(--anim-entrance) forwards 0.4s;
+        }
+        .terms-text p { margin-bottom: 16px; }
+        .terms-text strong { color: #fff; font-weight: 600; }
+
+        /* --- Dynamic Status Console (The Fix) --- */
+        .status-viewport {
+            width: 100%;
+            max-width: 360px;
+            /* Start collapsed - Zero State */
+            height: 0;
+            margin-top: 0;
+            opacity: 0;
+            
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            
+            /* Hardware acceleration for smooth expansion */
+            will-change: height, margin-top, opacity;
+            transition: 
+                height var(--anim-ui-expand),
+                margin-top var(--anim-ui-expand),
+                opacity var(--anim-ui-expand);
+        }
+
+        /* Active State - triggered by JS */
+        .status-viewport.active {
+            height: 80px;
+            margin-top: 24px;
+            opacity: 1;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .status-log {
+            padding: 12px 16px;
+            height: 100%;
+            overflow-y: auto;
+            font-family: 'SF Mono', 'Roboto Mono', monospace;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        /* Custom Scrollbar for the console */
+        .status-log::-webkit-scrollbar { width: 4px; }
+        .status-log::-webkit-scrollbar-track { background: transparent; }
+        .status-log::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+
+        .log-entry {
+            display: flex;
+            align-items: center;
+            min-height: 16px;
+        }
+        .log-entry.ok { color: var(--color-success); }
+        .log-entry.warn { color: var(--color-warning); }
+        .log-entry.err { color: var(--color-error); }
+        .log-entry.muted { color: var(--color-text-muted); }
+
+        .spinner {
+            width: 10px;
+            height: 10px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-top-color: var(--color-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        /* --- CTA Button --- */
+        .btn-accept {
+            position: relative;
+            background: var(--color-primary);
+            color: #fff;
+            font-size: 17px;
+            font-weight: 600;
+            padding: 18px 0;
+            width: 100%;
+            max-width: 320px;
+            border: none;
+            border-radius: 99px;
+            cursor: pointer;
+            margin-top: 32px;
+            
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUpItem var(--anim-entrance) forwards 0.5s;
+            
+            box-shadow: 0 8px 24px rgba(10, 132, 255, 0.25);
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-accept:active { transform: scale(0.96); }
+        .btn-accept:disabled {
+            background-color: #333;
+            color: #888;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* --- Keyframes --- */
+        @keyframes fadeInSimple { to { opacity: 1; } }
+        @keyframes slideUp { to { transform: translateY(0); } }
+        @keyframes fadeUpItem { to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 380px) {
+            .bottom-section { padding: 28px 20px; }
+            .terms-title { font-size: 20px; margin-bottom: 16px; }
+            .terms-text { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <video muted loop playsinline preload="metadata" id="background-video" poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+        <source src="../static/assets/landing2.mp4" type="video/mp4">
+    </video>
+
+    <main class="bottom-section LiquidGlass-effect" role="main">
+        <h1 class="terms-title">Terms & Permissions</h1>
+       
+        <div class="terms-text">
+            <p>Gestura employs advanced computer vision which requires specific hardware access. By proceeding, you agree to our usage policy regarding real-time gesture processing.</p>
+            <p>We request access to <strong>Camera</strong> and <strong>Microphone</strong> inputs. These streams are processed locally on-device and are not transmitted to external servers, ensuring your privacy.</p>
+            <p>Tap “Agree & Continue” to grant permissions and initialize the engine.</p>
+         </div>
+
+        <!-- Structural Change: Status Container is now hidden by default -->
+        <div id="status-viewport" class="status-viewport" aria-live="polite">
+            <div id="status-log" class="status-log"></div>
+        </div>
+
+        <button id="btn-accept" class="btn-accept" type="button">Agree & Continue</button>
+    </main>
+
+<script>
+/**
+ * Gestura Permission Module v1.0.0 
+ * Features: Lazy-load UI expansion, Reactive State Store, Secure Context Validation
+ */
+(function() {
+    'use strict';
+
+    const CONFIG = Object.freeze({
+        TIMEOUT_MS: 12000,
+        REDIRECT_TARGET: 'index.html',
+        CONSTRAINTS: {
+            VIDEO: { facingMode: 'user', width: { ideal: 1280 } },
+            AUDIO: { echoCancellation: true }
+        },
+        // Regex for IPv4, IPv6, Localhost
+        LOCALHOST: /^localhost$|^127(?:\.[0-9]+){0,2}\.[0-9]+$|^(?:0*:)*:?1$/
+    });
+
+    // --- Core Logic ---
+    class PermissionEngine {
+        constructor(logger) { this.log = logger; }
+
+        static isSecure() {
+            return window.isSecureContext || CONFIG.LOCALHOST.test(location.hostname);
+        }
+
+        async request(type, constraints) {
+            this.log(`Initializing ${type} module...`, 'muted', true);
+            
+            // Promise Race for Timeout
+            const stream = await Promise.race([
+                navigator.mediaDevices.getUserMedia(constraints),
+                new Promise((_, r) => setTimeout(() => r(new Error('Hardware request timed out')), CONFIG.TIMEOUT_MS))
+            ]);
+
+            // Immediate Cleanup (We only need the permission bit)
+            stream.getTracks().forEach(t => t.stop());
+            this.log(`${type} acquired successfully.`, 'ok');
+        }
+    }
+
+    // --- UI Controller (The Complex Part) ---
+    class UI {
+        constructor() {
+            this.els = {
+                btn: document.getElementById('btn-accept'),
+                viewport: document.getElementById('status-viewport'),
+                log: document.getElementById('status-log'),
+                video: document.getElementById('background-video')
+            };
+            this.hasActivatedConsole = false;
+            this._initVideoFallback();
+        }
+
+        _initVideoFallback() {
+            this.els.video.play().catch(() => {
+                console.warn('Autoplay prevented by browser policy.');
+            });
+            this.els.video.addEventListener('error', () => {
+                document.body.style.backgroundColor = '#111';
+            }, { once: true });
+        }
+
+        // Lazy-load the status console only when needed
+        activateConsole() {
+            if (!this.hasActivatedConsole) {
+                this.els.viewport.classList.add('active');
+                this.hasActivatedConsole = true;
+            }
+        }
+
+        log(msg, type = 'muted', spinner = false) {
+            this.activateConsole(); // Trigger UI expansion
+
+            const row = document.createElement('div');
+            row.className = `log-entry ${type}`;
+            
+            if (spinner) {
+                const s = document.createElement('div');
+                s.className = 'spinner';
+                row.appendChild(s);
+            }
+            
+            row.appendChild(document.createTextNode(msg));
+            this.els.log.appendChild(row);
+            
+            // Smooth scroll to bottom
+            requestAnimationFrame(() => {
+                this.els.log.scrollTop = this.els.log.scrollHeight;
+            });
+        }
+
+        setBusy(isBusy) {
+            this.els.btn.disabled = isBusy;
+            this.els.btn.textContent = isBusy ? 'Verifying Hardware...' : 'Agree & Continue';
+            this.els.btn.style.opacity = isBusy ? '0.7' : '1';
+        }
+
+        initVideo() {
+            // Moved to constructor as _initVideoFallback
+        }
+    }
+
+    // --- Orchestration ---
+    class App {
+        constructor() {
+            this.ui = new UI();
+            this.engine = new PermissionEngine(this.ui.log.bind(this.ui));
+            this.isProcessing = false;
+        }
+
+        async start() {
+            if (this.isProcessing) return;
+            this.isProcessing = true;
+            this.ui.setBusy(true);
+
+            // Clean previous logs if retry
+            if (this.ui.hasActivatedConsole) this.ui.els.log.innerHTML = '';
+
+            try {
+                if (!PermissionEngine.isSecure()) throw new Error('HTTPS required for secure boot.');
+                
+                await this.engine.request('Camera', { video: CONFIG.CONSTRAINTS.VIDEO });
+                await this.engine.request('Microphone', { audio: CONFIG.CONSTRAINTS.AUDIO });
+
+                this.ui.log('Security handshake complete.', 'ok');
+                this.ui.log('Redirecting to dashboard...', 'muted');
+                
+                setTimeout(() => window.location.replace(CONFIG.REDIRECT_TARGET), 1000);
+
+            } catch (e) {
+                console.error(e);
+                let msg = e.name === 'NotAllowedError' ? 'Permission denied by user.' : e.message;
+                this.ui.log(`Error: ${msg}`, 'err');
+                
+                this.isProcessing = false;
+                this.ui.setBusy(false);
+                this.ui.els.btn.textContent = 'Retry System Check';
+                if (navigator.vibrate) navigator.vibrate(300);
+            }
+        }
+
+        init() {
+            // this.ui.initVideo(); // Now handled in constructor
+            this.ui.els.btn.addEventListener('click', () => this.start());
+        }
+    }
+
+    // Boot
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => new App().init());
+    } else {
+        new App().init();
+    }
+})();
+</script>
+</body>
+</html>

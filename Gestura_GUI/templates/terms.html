@@ -1,0 +1,495 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Terms of Service — Gestura</title>
+  <meta name="description" content="By using Gestura, you agree to these terms. Read them carefully." />
+  <meta name="theme-color" content="#0a0a0a" />
+  <link rel="icon" type="image/png" href="../static/assets/fav.ico">
+  <style>
+    :root {
+      --bg: #f9f9fb;
+      --surface: rgba(255, 255, 255, 0.75);
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --accent: #0a84ff;
+      --radius: 16px;
+      --transition: 300ms cubic-bezier(0.25, 0.8, 0.25, 1);
+      --max-width: 720px;
+      --padding: 20px;
+      font-synthesis: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1c1c1e;
+        --surface: rgba(30, 30, 32, 0.7);
+        --text: #f5f5f7;
+        --muted: #8e8e93;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body {
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: var(--surface);
+      border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+      padding: 12px var(--padding);
+    }
+
+    .nav {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 17px;
+    }
+
+    .logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #3ec3ff);
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 4px 12px rgba(10, 132, 255, 0.2);
+    }
+
+    .nav-actions a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    /* Main */
+    main {
+      flex: 1;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 24px var(--padding);
+      width: 100%;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 20px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 0.5px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .kicker {
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .lede {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    /* Accordion */
+    .accordion {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .accordion-item {
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+      border: 0.5px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .acc-trigger {
+      width: 100%;
+      padding: 16px 18px;
+      background: transparent;
+      border: none;
+      text-align: left;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+
+    .acc-trigger:hover {
+      background: rgba(10, 132, 255, 0.06);
+    }
+
+    .acc-trigger[aria-expanded="true"] {
+      background: rgba(10, 132, 255, 0.08);
+    }
+
+    .acc-trigger svg {
+      width: 20px;
+      height: 20px;
+      transition: transform var(--transition);
+      color: var(--muted);
+    }
+
+    .acc-trigger[aria-expanded="true"] svg {
+      transform: rotate(180deg);
+    }
+
+    .acc-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height var(--transition), padding var(--transition);
+      padding: 0 18px;
+    }
+
+    .acc-content.open {
+      padding: 12px 18px 20px;
+    }
+
+    .acc-content p,
+    .acc-content ul,
+    .acc-content ol {
+      margin: 0 0 14px;
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .acc-content ul,
+    .acc-content ol {
+      padding-left: 20px;
+    }
+
+    .acc-content li {
+      margin-bottom: 8px;
+    }
+
+    .acc-content strong {
+      color: var(--text);
+    }
+
+    .acc-content a {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+
+    /* Footer */
+    footer {
+      padding: 20px var(--padding);
+      border-top: 0.5px solid rgba(0, 0, 0, 0.1);
+      margin-top: 40px;
+    }
+
+    .legal {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .legal a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      :root { --padding: 16px; }
+      h1 { font-size: 24px; }
+      .card { padding: 16px; }
+      .acc-trigger { padding: 14px 16px; font-size: 16px; }
+      .acc-content.open { padding: 10px 16px 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="nav">
+      <a href="{{ url_for('gestura') }}" class="brand">
+        <div>
+          <img src="../static/assets/gestura.png" alt="Gestura" style="height:72px;">
+        </div>
+      </a>
+      <div class="nav-actions">
+      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=porocoxindia@gmail.com&su=Help%20with%20Gestura&body=Hi%20Gestura%20Team%2C%0A%0AI%20need%20assistance%20with..." class="footer-link" target="_blank">Support</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <article class="card">
+      <span class="kicker">Legal Agreement</span>
+      <h1>Terms of Service</h1>
+      <p class="lede">Effective: <strong>November 1, 2025</strong><br>By using Gestura, you agree to these terms. Please read them carefully.</p>
+
+      <div class="accordion" id="terms-accordion">
+        <!-- Sections injected by JS -->
+      </div>
+
+      <div style="margin-top: 20px; padding-top: 16px; border-top: 0.5px solid rgba(0,0,0,0.1); font-size: 14px; color: var(--muted);">
+        <p><strong>Any other issues?</strong><br>
+        Reach out us here <a href="https://mail.google.com/mail/?view=cm&fs=1&to=porocoxindia@gmail.com&su=Help%20with%20Gestura&body=Hi%20Gestura%20Team%2C%0A%0AI%20need%20assistance%20with..." class="footer-link" style="color:var(--accent)" target="_blank">Support</a>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <div class="legal">
+      <div>© <span id="year"></span> Porocox Pvt. Ltd.</div>
+      <div>
+        <a href="{{ url_for('terms') }}">Privacy</a> ·
+        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=porocoxindia@gmail.com&su=Help%20with%20Gestura&body=Hi%20Gestura%20Team%2C%0A%0AI%20need%20assistance%20with..." class="footer-link" target="_blank">Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Set current year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Terms of Service content
+    const sections = [
+      {
+        id: 'acceptance',
+        title: '1. Acceptance of Terms',
+        summary: 'By using Gestura, you agree to be bound by these terms.',
+        content: `
+          <p>These Terms of Service ("Terms") govern your access to and use of Gestura’s mobile app, website, and any related services (collectively, the "Service"). By creating an account, accessing, or using the Service, you agree to be bound by these Terms and our <a href="{{ url_for('terms') }}">Privacy Policy</a>.</p>
+          <p>If you do not agree, do not use the Service.</p>
+        `
+      },
+      {
+        id: 'changes',
+        title: '2. Changes to Terms',
+        summary: 'We may update these terms. Continued use means acceptance.',
+        content: `
+          <p>We may modify these Terms at any time. We will provide notice of material changes via the app, email, or website. Your continued use of the Service after changes constitutes acceptance of the updated Terms.</p>
+          <p>If you do not agree with the new Terms, you must stop using the Service and delete your account.</p>
+        `
+      },
+      {
+        id: 'eligibility',
+        title: '3. Eligibility',
+        summary: 'You must be 13+ (or 16+ in some regions) to use Gestura.',
+        content: `
+          <p>You must be at least 13 years old to use the Service. In some regions (e.g., EU), you must be at least 16. If you are under 18, you must have permission from a parent or legal guardian.</p>
+          <p>You represent that you have the legal capacity to enter into these Terms.</p>
+        `
+      },
+      {
+        id: 'account',
+        title: '4. Your Account',
+        summary: 'Keep your account secure. You’re responsible for all activity.',
+        content: `
+          <p>You are responsible for maintaining the confidentiality of your account credentials. Notify us immediately of any unauthorized use.</p>
+          <p>You may not share your account or transfer it to anyone else. We reserve the right to suspend or terminate accounts for violations of these Terms.</p>
+        `
+      },
+      {
+        id: 'content',
+        title: '5. User Content',
+        summary: 'You own your content. We get a license to operate the Service.',
+        content: `
+          <p>You retain ownership of any content you upload or create ("User Content"). By submitting User Content, you grant Gestura a worldwide, non-exclusive, royalty-free license to use, modify, display, and distribute it as needed to provide and improve the Service.</p>
+          <p>You are solely responsible for your User Content. It must not violate laws or third-party rights.</p>
+        `
+      },
+      {
+        id: 'conduct',
+        title: '6. Prohibited Conduct',
+        summary: 'Don’t misuse the Service or harm others.',
+        content: `
+          <p>You agree not to:</p>
+          <ul>
+            <li>Use the Service for illegal purposes</li>
+            <li>Interfere with or disrupt the Service</li>
+            <li>Attempt to gain unauthorized access</li>
+            <li>Harass, abuse, or harm others</li>
+            <li>Impersonate any person or entity</li>
+            <li>Reverse engineer or extract source code</li>
+            <li>Upload viruses or malicious code</li>
+          </ul>
+        `
+      },
+      {
+        id: 'payments',
+        title: '7. Payments & Subscriptions',
+        summary: 'Paid features are non-refundable. Auto-renewal applies.',
+        content: `
+          <p>Some features require payment. All fees are in USD and non-refundable, except as required by law.</p>
+          <p>Subscriptions auto-renew unless canceled at least 24 hours before renewal. You may cancel anytime via your account settings or app store.</p>
+          <p>We may change pricing with 30 days’ notice.</p>
+        `
+      },
+      {
+        id: 'termination',
+        title: '8. Termination',
+        summary: 'We may suspend or terminate your access at any time.',
+        content: `
+          <p>We may suspend or terminate your access to the Service at any time, with or without cause, and with or without notice. Upon termination, your right to use the Service ends immediately.</p>
+          <p>You may terminate your account at any time via settings.</p>
+        `
+      },
+      {
+        id: 'warranty',
+        title: '9. No Warranty',
+        summary: 'The Service is provided “as is” without guarantees.',
+        content: `
+          <p>The Service is provided on an “as is” and “as available” basis. We do not warrant that it will be uninterrupted, secure, or error-free.</p>
+          <p>To the fullest extent permitted by law, we disclaim all warranties, express or implied, including fitness for a particular purpose and non-infringement.</p>
+        `
+      },
+      {
+        id: 'liability',
+        title: '10. Limitation of Liability',
+        summary: 'We’re not liable for indirect damages.',
+        content: `
+          <p>To the maximum extent permitted by law, Gestura shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or goodwill.</p>
+          <p>Our total liability shall not exceed the amount you paid us in the 12 months prior to the claim.</p>
+        `
+      },
+      {
+        id: 'governing-law',
+        title: '11. Governing Law',
+        summary: 'These terms are governed by California law.',
+        content: `
+          <p>These Terms are governed by the laws of the State of California, without regard to conflict of law principles. Any disputes shall be resolved in the state or federal courts of San Francisco County, California.</p>
+        `
+      },
+      {
+        id: 'contact',
+        title: '12. Contact Us',
+        summary: 'Reach us at support@gestura.com',
+        content: `
+          <p>For questions about these Terms, contact us at:</p>
+          <p><strong>Email:</strong> <a href="mailto:support@gestura.com">support@gestura.com</a><br>
+          <strong>Address:</strong> Gestura Inc., 123 Innovation Way, San Francisco, CA 94107, USA</p>
+        `
+      }
+    ];
+
+    // Build accordion
+    const accordion = document.getElementById('terms-accordion');
+    sections.forEach((sec, idx) => {
+      const item = document.createElement('div');
+      item.className = 'accordion-item';
+
+      const trigger = document.createElement('button');
+      trigger.className = 'acc-trigger';
+      trigger.setAttribute('aria-expanded', idx === 0 ? 'true' : 'false');
+      trigger.setAttribute('aria-controls', sec.id + '-content');
+      trigger.innerHTML = `
+        <span>
+          <div><strong>${sec.title}</strong></div>
+          <div style="font-size:13px; color:var(--muted); margin-top:4px;">${sec.summary}</div>
+        </span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      `;
+
+      const content = document.createElement('div');
+      content.className = 'acc-content' + (idx === 0 ? ' open' : '');
+      content.id = sec.id + '-content';
+      content.innerHTML = sec.content;
+
+      item.appendChild(trigger);
+      item.appendChild(content);
+      accordion.appendChild(item);
+
+      // Toggle behavior
+      trigger.addEventListener('click', () => {
+        const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+        document.querySelectorAll('.acc-trigger').forEach(t => {
+          t.setAttribute('aria-expanded', 'false');
+          const c = document.getElementById(t.getAttribute('aria-controls'));
+          if (c) {
+            c.classList.remove('open');
+            c.style.maxHeight = null;
+          }
+        });
+        if (!isOpen) {
+          trigger.setAttribute('aria-expanded', 'true');
+          content.classList.add('open');
+          content.style.maxHeight = content.scrollHeight + 'px';
+        }
+      });
+
+      // Auto-resize on load
+      if (idx === 0) {
+        setTimeout(() => {
+          content.style.maxHeight = content.scrollHeight + 'px';
+        }, 100);
+      }
+    });
+
+    // Resize open panels on window resize
+    window.addEventListener('resize', () => {
+      document.querySelectorAll('.acc-content.open').forEach(c => {
+        c.style.maxHeight = c.scrollHeight + 'px';
+      });
+    });
+  </script>
+</body>
+</html>

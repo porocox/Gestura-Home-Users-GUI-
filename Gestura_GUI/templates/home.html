@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Welcome To Gestura</title>
+
+  <!-- React 18 & ReactDOM -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <style>
+    /* ===================== Reset & Base ===================== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; color: #fff; overflow: hidden; }
+    body { display: flex; flex-direction: column; justify-content: flex-end; align-items: center; text-align: center; position: relative; background: #000; }
+
+    /* ===================== Background Video ===================== */
+    #bg-video { 
+      position: fixed; 
+      inset: 0; 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+      z-index: -2; 
+    }
+    .dark-overlay { 
+      position: fixed; 
+      inset: 0; 
+      background: rgba(0, 0, 0, 0.18); 
+      z-index: -1; 
+    }
+
+    /* ===================== Bottom Sheet Animation ===================== */
+    @keyframes slideUp { to { transform: translateY(0); } }
+
+    /* ===================== Button ===================== */
+    .btn-continue {
+      background: #007aff;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 600;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      width: 80%;
+      max-width: 300px;
+      letter-spacing: 0.4px;
+      transition: transform 0.1s ease, opacity 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-continue:active { transform: scale(0.96); opacity: 0.85; }
+    .btn-continue:focus { outline: 2px solid rgba(0, 122, 255, 0.45); outline-offset: 3px; }
+
+    /* ===================== Description ===================== */
+    .description {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.88);
+      margin-top: 14px;
+      line-height: 1.55;
+      max-width: 340px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    }
+
+    @media (max-width: 375px) {
+      .description { font-size: 12px; }
+      .btn-continue { font-size: 16px; }
+    }
+
+    /* ===================== EXACT LIQUID GLASS CSS ===================== */
+    :root {
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+        Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+      line-height: 1.5;
+      font-weight: 300;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    :root {
+      --lg-shadow: 0 6px 6px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
+      --lg-spring: cubic-bezier(0.175, 0.885, 0.32, 2.2);
+    }
+    .lg {
+      --lg-radius: 26px;
+      --lg-blur: 8px;
+      --lg-tint: rgba(255, 255, 255, 0.14);
+      --lg-fg: rgba(255, 255, 255, 0.92);
+      position: relative;
+      display: flex;
+      overflow: hidden;
+      font-weight: 600;
+      color: var(--lg-fg);
+      background: transparent;
+      border: 0;
+      border-radius: var(--lg-radius);
+      box-shadow: var(--lg-shadow), 0 -30px 80px rgba(0, 0, 0, 0.55);
+      transition: all 0.4s var(--lg-spring);
+    }
+    .lg__effect,
+    .lg__tint,
+    .lg__shine {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--lg-radius);
+      pointer-events: none;
+    }
+    .lg__effect {
+      z-index: 0;
+      overflow: hidden;
+      isolation: isolate;
+      opacity: 1;
+      transition: opacity 560ms ease-out;
+      -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(150%);
+      backdrop-filter: blur(var(--lg-blur)) saturate(150%);
+    }
+    .lg__tint {
+      z-index: 1;
+      background: var(--lg-tint);
+    }
+    .lg__shine {
+      z-index: 2;
+      overflow: hidden;
+      box-shadow: inset 2px 2px 1px 0 rgba(255, 255, 255, 0.5),
+        inset -1px -1px 1px 1px rgba(255, 255, 255, 0.5);
+    }
+    .lg__content {
+      z-index: 3;
+      position: relative;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      padding-bottom: calc(20px + env(safe-area-inset-bottom, 20px));
+    }
+    .lg--card:hover {
+      scale: 0.99;
+    }
+    .lg__shine::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.08));
+      border-radius: var(--lg-radius);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .lg { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Video - NO LOOP -->
+  <video id="bg-video" autoplay muted playsinline preload="auto">
+    <source src="../static/assets/landing.mp4" type="video/mp4">
+  </video>
+
+  <!-- Button Click SFX -->
+  <audio id="btn-click-sfx" preload="auto">
+    <source src="../Audio/button_click.wav" type="audio/wav">
+  </audio>
+
+  <div class="dark-overlay"></div>
+
+  <!-- React Root -->
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { forwardRef, useId } = React;
+
+    function cx(...values) {
+      const classNames = [];
+      for (const value of values) {
+        if (!value) continue;
+        if (typeof value === 'string') { classNames.push(value); continue; }
+        if (Array.isArray(value)) { classNames.push(cx(...value)); continue; }
+        if (typeof value === 'object') {
+          for (const [key, enabled] of Object.entries(value)) {
+            if (enabled) classNames.push(key);
+          }
+        }
+      }
+      return classNames.join(' ');
+    }
+
+    function toDomId(value) {
+      return String(value).replace(/[^A-Za-z0-9_-]/g, '_');
+    }
+
+    function LiquidGlassFilter({ id, distortionScale = 150 }) {
+      return (
+        <svg aria-hidden="true" focusable="false" width="0" height="0" style={{ position: 'absolute' }}>
+          <filter id={id} x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox">
+            <feTurbulence type="fractalNoise" baseFrequency="0.01 0.01" numOctaves={1} seed={5} result="turbulence" />
+            <feComponentTransfer in="turbulence" result="mapped">
+              <feFuncR type="gamma" amplitude={1} exponent={10} offset={0.5} />
+              <feFuncG type="gamma" amplitude={0} exponent={1} offset={0} />
+              <feFuncB type="gamma" amplitude={0} exponent={1} offset={0.5} />
+            </feComponentTransfer>
+            <feGaussianBlur in="turbulence" stdDeviation={3} result="softMap" />
+            <feSpecularLighting in="softMap" surfaceScale={5} specularConstant={1} specularExponent={100} lightingColor="white" result="specLight">
+              <fePointLight x={-200} y={-200} z={300} />
+            </feSpecularLighting>
+            <feComposite in="specLight" operator="arithmetic" k1={0} k2={1} k3={1} k4={0} result="litImage" />
+            <feDisplacementMap in="SourceGraphic" in2="softMap" scale={distortionScale} xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </svg>
+      );
+    }
+
+    const LiquidGlassSurface = forwardRef(function LiquidGlassSurface(
+      { as, variant = 'surface', interactive = true, tint, blur, distortionScale, style, className, children, ...props },
+      ref
+    ) {
+      const Component = as ?? 'div';
+      const filterId = `lg_glass_${toDomId(useId())}`;
+      const mergedStyle = { ...(style ?? {}) };
+      if (tint) mergedStyle['--lg-tint'] = tint;
+      if (blur) mergedStyle['--lg-blur'] = blur;
+      return (
+        <Component ref={ref} className={cx('lg', variant !== 'surface' && `lg--${variant}`, interactive && 'lg--interactive', className)} style={mergedStyle} {...props}>
+          <LiquidGlassFilter id={filterId} distortionScale={distortionScale} />
+          <div aria-hidden="true" className="lg__effect" style={{ filter: `url(#${filterId})` }} />
+          <div aria-hidden="true" className="lg__tint" />
+          <div aria-hidden="true" className="lg__shine" />
+          <div className="lg__content">{children}</div>
+        </Component>
+      );
+    });
+
+    function App() {
+      return (
+        <div style={{
+          width: '100%',
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          animation: 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+          animationDelay: '1.5s',
+          transform: 'translateY(100%)'
+        }}>
+          <LiquidGlassSurface as="main" variant="card" interactive={false}>
+            <button className="btn-continue" onClick={openTerms}>Continue</button>
+            <p className="description">
+              Welcome to Gestura.<br/>
+              Step into a new way to interact with your world.<br/>
+              A seamless interaction between you and your system.<br/>
+              Navigate, scroll, and command — effortlessly.
+            </p>
+          </LiquidGlassSurface>
+        </div>
+      );
+    }
+
+    const rootEl = document.getElementById('root');
+    if (typeof ReactDOM.createRoot === 'function') {
+      ReactDOM.createRoot(rootEl).render(<App />);
+    } else {
+      ReactDOM.render(<App />, rootEl);
+    }
+
+    function openTerms() {
+      const audio = document.getElementById('btn-click-sfx');
+      audio.volume = 0.7;
+      audio.play().catch(() => {});
+      window.location.href = "terms&cond.html";
+    }
+  </script>
+
+  <!-- Babel for JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</body>
+</html>

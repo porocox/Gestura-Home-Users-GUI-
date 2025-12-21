@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Air Zoom</title>
+  <link rel="icon" type="image/png" href="fav.png">
+  <meta charset="UTF-8">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#000000">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Search engine essentials -->
+<meta name="title" content="Air View – Gesture-Controlled Magnification Tool">
+<meta name="description" content="Air View is a gesture-controlled smart magnifier that transforms your webcam into a precise, touchless zooming tool. Perfect for presentations, documents, and detailed exploration.">
+
+<!-- Open Graph for social previews -->
+<meta property="og:title" content="Air View – Gesture-Controlled Magnification Tool">
+<meta property="og:description" content="Experience precise, touchless magnification powered by real-time hand tracking.">
+<meta property="og:image" content="https://porocox.vercel.app/static/1000013127.png">
+<meta property="og:url" content="https://porocox.vercel.app/">
+<meta property="og:type" content="website">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Air View – Gesture-Controlled Magnification Tool">
+<meta name="twitter:description" content="Touchless zoom powered by real-time hand tracking.">
+<meta name="twitter:image" content="https://yourwebsite.com/static/fav.png">
+<link rel="canonical" href="https://porocox.vercel.com/info">
+
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #1d1d1f;
+      --bg-tertiary: #272729;
+      --text-primary: #f5f5f7;
+      --text-secondary: #a1a1a6;
+      --border: #424245;
+      --accent: #0a84ff;
+      --accent-hover: #0d9dff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        padding: 0 2rem;
+        background: rgba(10, 10, 10, 0.7);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+        z-index: 1000;
+      }
+
+      .nav-left,
+      .nav-right {
+        flex: 1;
+      }
+
+      .nav-center {
+        flex: 0;
+        display: flex;
+        justify-content: center;
+      }
+
+      nav img.Logo {
+        height: 78px;
+        width: auto;
+        display: block;
+      }
+        
+    nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: var(--text-primary);
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 56px;
+      min-height: 100vh;
+    }
+
+    .hero {
+      width: 100%;
+      max-width: 900px;
+      padding: 5rem 2rem 3rem;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.2rem;
+      line-height: 1.1;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-image {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: var(--bg-secondary);
+      border-radius: 20px;
+      margin-top: 2.5rem;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .cta-section {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2.5rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.8rem;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--bg-tertiary);
+    }
+
+    .features-grid {
+      width: 100%;
+      max-width: 900px;
+      padding: 4rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+
+    .feature {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .feature h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+      color: var(--text-primary);
+    }
+
+    .feature p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .section {
+      width: 100%;
+      max-width: 900px;
+      padding: 3rem 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .section h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      letter-spacing: -0.01em;
+    }
+
+    .specs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .spec-item {
+      background-color: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .spec-item h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+      color: var(--accent);
+    }
+
+    .spec-item p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .benefits-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .benefit-item {
+      display: flex;
+      gap: 1rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .benefit-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .benefit-icon {
+      font-size: 1.5rem;
+      min-width: 24px;
+      color: var(--accent);
+    }
+
+    .benefit-content h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: var(--text-primary);
+    }
+
+    .benefit-content p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .tech-stack {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .tech-item {
+      background-color: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .tech-item h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .tech-item p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .footer {
+      width: 100%;
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .footer-content {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .footer p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text-primary);
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .hero {
+        padding: 3rem 1.5rem 2rem;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 2rem 1.5rem;
+      }
+
+      .specs-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tech-stack {
+        grid-template-columns: 1fr;
+      }
+
+      .section {
+        padding: 2rem 1.5rem;
+      }
+
+      .section h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+ <nav>
+  <div class="nav-left"></div>
+
+  <div class="nav-center">
+    <img src="https://porocox.vercel.app/static/Gestura2.png" alt="Gestura Logo" class="Logo">
+  </div>
+
+  <div class="nav-right"></div>
+</nav>
+
+ <main>
+    <section class="hero">
+      <p>I N T R O D U C I N G</p>
+      <h1>Air View</h1>
+      <p>Hand gesture precision zooming. No keyboard. No mouse. Just your fingers and your device.</p>
+      
+      <div class="hero-image">
+        <img src="https://porocox.vercel.app/static/1000013127.png" alt="Gestura Air">
+      </div>
+
+      <div class="cta-section">
+        <a href="https://porocox.vercel.app" target="_blank"><button class="btn btn-primary"><strong>Get Gestura Air</strong></button></a>
+        <a href="https://porocox.vercel.app/pro" target="_blank"><button class="btn btn-secondary"><strong>Learn more</strong></button></a>
+      </div>
+    </section>
+
+    <section class="features-grid">
+      <div class="feature">
+        <h3>Gesture Zooming</h3>
+        <p>Spread your fingers to zoom in up to 4x. The zoom automatically centers between your fingertips. Bring them closer to zoom out smoothly.</p>
+      </div>
+
+      <div class="feature">
+        <h3>Smart Tracking</h3>
+        <p>Motion prediction keeps the magnifier centered. Adaptive sensitivity learns your baseline, so slight hand movements never trigger unwanted zooms.</p>
+      </div>
+
+      <div class="feature">
+        <h3>Stability Monitor</h3>
+        <p>Real-time hand steadiness indicator with automatic drift correction. Your magnifier stays exactly where you need it.</p>
+      </div>
+
+      <div class="feature">
+        <h3>Palm Reset</h3>
+        <p>Hold your palm flat for 2 seconds to gently reset to default zoom. A natural gesture for a natural interaction.</p>
+      </div>
+
+      <div class="feature">
+        <h3>Private. Local. Fast.</h3>
+        <p>All processing happens on your device. Hand data never leaves your machine. Runs at 30 FPS with minimal latency.</p>
+      </div>
+
+      <div class="feature">
+        <h3>Hand Enrollment</h3>
+        <p>On first launch, Air Zoom captures your hand profile mathematically to prevent unauthorized use. Security that stays with you.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Core Capabilities</h2>
+      <div class="specs-grid">
+        <div class="spec-item">
+          <h4>Maximum Zoom Level</h4>
+          <p>Up to 4x magnification with smooth interpolation and pixel-perfect tracking between your fingertips.</p>
+        </div>
+        <div class="spec-item">
+          <h4>Processing Speed</h4>
+          <p>Consistent 30 FPS performance with sub-50ms latency, even alongside heavy applications and livestreaming.</p>
+        </div>
+        <div class="spec-item">
+          <h4>Hand Recognition</h4>
+          <p>Learns your unique hand geometry on first use. Prevents unauthorized access with mathematical verification.</p>
+        </div>
+        <div class="spec-item">
+          <h4>Gesture Precision</h4>
+          <p>Advanced motion prediction smooths hand tremor and natural movement variations for pixel-accurate zooming.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Why Air View</h2>
+      <div class="benefits-list">
+        <div class="benefit-item">
+          <div class="benefit-icon">✓</div>
+          <div class="benefit-content">
+            <h4>Zero Setup Required</h4>
+            <p>Launch and zoom. Hand enrollment takes seconds. No configuration menus, no learning curves.</p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">✓</div>
+          <div class="benefit-content">
+            <h4>Privacy First</h4>
+            <p>Every frame processed locally on your machine. Your hand data never leaves your device, ever.</p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">✓</div>
+          <div class="benefit-content">
+            <h4>Universal Compatibility</h4>
+            <p>Works with any application—documents, images, web content, or design tools. No special integration needed.</p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">✓</div>
+          <div class="benefit-content">
+            <h4>Adaptive Intelligence</h4>
+            <p>Learns your natural hand spacing and movement patterns to eliminate false triggers and jitter.</p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">✓</div>
+          <div class="benefit-content">
+            <h4>Accessible Design</h4>
+            <p>Natural hand gestures require no special hardware, training, or accessibility modifications.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Use Cases</h2>
+      <div class="specs-grid">
+        <div class="spec-item">
+          <h4>Precise Reading</h4>
+          <p>Zoom into documents, PDFs, and articles with natural hand gestures. Perfect for extended reading sessions.</p>
+        </div>
+        <div class="spec-item">
+          <h4>Design Work</h4>
+          <p>Magnify UI elements, pixel-perfect details, and fine typography without touching your keyboard.</p>
+        </div>
+        <div class="spec-item">
+          <h4>Accessibility</h4>
+          <p>Hands-free magnification that works for everyone. No complex setups, no assistive technology barriers.</p>
+        </div>
+        <div class="spec-item">
+          <h4>Content Creation</h4>
+          <p>Zoom while recording or streaming without interrupting your workflow. Seamless multi-tasking.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
+          <a href="mailto:porocoxindia@gmail.com">Contact</a>
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=porocoxindia@gmail.com&su=Help%20with%20Gestura&body=Hi%20Gestura%20Team%2C%0A%0AI%20need%20assistance%20with..." class="footer-link" target="_blank">Support</a>
+        </div>
+        <p>© 2025 Porocox Pvt. Ltd. Designed with clarity, built with care.</p>
+        <p style="font-size: 0.75rem; margin-top: 1rem; color: #666;">All hand data processing happens locally on your device. No data collection. No telemetry.</p>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>
