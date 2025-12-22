@@ -16,7 +16,7 @@ The application is distributed as a prebuilt executable and does not require Pyt
 
 ## Screenshots
 
-> All this screenshots are presentatio purpose only
+> All this screenshots are presentation purpose only
 
 ### Home Screen
 ![Home Screen](https://porocox.vercel.app/static/hero1.png)
@@ -103,6 +103,6 @@ See the `LICENSE` file for details.
 
 ## Author
 
-Developed and maintained by **PorocoX**.
+Developed and maintained by **PorocoX Pvt. Ltd.**.
 
 
