@@ -8,9 +8,9 @@
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3/camera_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4/hands.js" crossorigin="anonymous"></script>
   <style>
-    /* ────────────────────────────────────────────────────────────────
+    /* 
        ALL STYLE AND ANIMATION FOR THE SOFTWARE HOME INTERFACE
-       ──────────────────────────────────────────────────────────────── */
+        */
     body {font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}.pulse{animation:pulse 1.5s infinite}
     .page{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0}.page.active{z-index:2}
@@ -74,7 +74,7 @@
           <div class="step-indicator w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 mt-0.5">1</div>
           <div class="text-gray-700 text-sm leading-relaxed">Allow camera access</div>
         </div>
-        <div class="26 flex items-start space-x-4 p-4 bg-gray-50 rounded-2xl">
+        <div class="flex items-start space-x-4 p-4 bg-gray-50 rounded-2xl">
           <div class="step-indicator w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 mt-0.5">2</div>
           <div class="text-gray-700 text-sm leading-relaxed">Wave your hand clearly</div>
         </div>
@@ -189,7 +189,7 @@
 
 <!-- ==================== GET STARTED BUTTON (ABOVE FOOTER) ==================== -->
 <div id="homeButtonContainer" class="w-full flex flex-col items-center space-y-3 px-4 pb-5">
-  <button class="w-4/5 ios-button ios-button-primary px-8" onclick="goTo('setupPage')">Get Started</button>
+  <button id="actionButton" class="w-4/5 ios-button ios-button-primary px-8" onclick="goTo('setupPage')">Get Started</button>
   <p class="text-center text-gray-600 text-sm max-w-sm leading-relaxed">
     Gesture control made simple. Start waving and take control of your device instantly.
   </p>
@@ -208,13 +208,26 @@
 class FaviconManager{static setFavicon(e){document.querySelectorAll("link[rel*='icon']").forEach(t=>t.remove());const t=document.createElement("link");t.rel="icon",t.type="image/x-icon",t.href=e,document.head.appendChild(t)}}
 window.addEventListener("DOMContentLoaded",()=>{FaviconManager.setFavicon("../static/assets/fav.ico");const e=document.querySelectorAll('.page');e.forEach(e=>{e.style.transform='translateX(100%)'});const t=document.getElementById('homePage');t.style.transform='translateX(0%)',t.classList.add('active');const o=document.querySelector('footer'),n=document.getElementById('homeButtonContainer');o.style.display='block',n.style.display='flex',document.getElementById('doneButton').addEventListener('click',closeSuccessModal)});
 let currentPage="homePage",videoStream=null,handDetected=false,waveCount=0,lastHandY=0,waveDirection=0,hands=null,camera=null;const requiredWaves=3,waveThreshold=0.05;
+let calibrationComplete = false; // Flag to track successful calibration
+
 function goTo(e){if(currentPage===e)return;const t=document.getElementById(currentPage),o=document.getElementById(e),n=(currentPage==="homePage"&&e==="setupPage")||(currentPage==="setupPage"&&e==="permissionPage")||(currentPage==="permissionPage"&&e==="calibrationPage"),i=n?1:-1;t.classList.remove('active'),o.classList.add('active'),t.style.transition='none',t.style.transform='translateX(0%)',o.style.transition='none',o.style.transform=`translateX(${i*100}%)`,void t.offsetHeight,void o.offsetHeight;const a='transform .4s cubic-bezier(.36,.66,.04,1)';t.style.transition=a,o.style.transition=a,t.style.transform=`translateX(${-i*100}%)`,o.style.transform='translateX(0%)',currentPage=e,setTimeout(()=>{t.style.transition='none',t.style.transform='translateX(100%)',void t.offsetHeight,t.style.transition=''},400);const l=document.querySelector('footer'),s=document.getElementById('homeButtonContainer');e==='homePage'?(l.style.display='block',s.style.display='flex'):(l.style.display='none',s.style.display='none')}
 async function requestCameraPermission(){const e=document.getElementById("camera"),t=document.getElementById("placeholderImage");try{videoStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:640,height:480}}),e.srcObject=videoStream,e.onloadedmetadata=()=>{t.style.display="none",e.play(),e.width=640,e.height=480},resetCalibration(),runHandDetection(e),goTo("calibrationPage")}catch(o){showToast("Camera access denied. Please enable camera permission in your browser settings."),goTo('setupPage')}}
 function stopMediaAccess(){if(videoStream){videoStream.getTracks().forEach(track => track.stop());videoStream=null}if(camera){camera.stop();camera=null}if(hands){hands.close();hands=null}}
 function stopCalibration(){stopMediaAccess();resetCalibration();goTo("setupPage")}
 function completeCalibration(){waveCount>=requiredWaves*2?(updateStatus("Calibration successful!", "green"),setTimeout(()=>{showToast("Calibration Complete"),showSuccessModal()},1e3)):showToast("Wave your hand more clearly to complete calibration.")}
-function showSuccessModal(){const e=document.getElementById("successModal");e.classList.add("show");stopMediaAccess();const t=document.querySelector(".tick-container");t&&setTimeout(()=>{t.classList.add("animate")},300)}
-function closeSuccessModal(){const e=document.getElementById("successModal");e.classList.remove("show");const t=document.querySelector(".tick-container");t&&t.classList.remove("animate");resetCalibration();goTo("homePage")}
+function showSuccessModal(){calibrationComplete = true;const e=document.getElementById("successModal");e.classList.add("show");stopMediaAccess();const t=document.querySelector(".tick-container");t&&setTimeout(()=>{t.classList.add("animate")},300)}
+function closeSuccessModal(){const e=document.getElementById("successModal");e.classList.remove("show");const t=document.querySelector(".tick-container");t&&t.classList.remove("animate");resetCalibration();goTo("homePage");
+// Update button on home page after successful calibration
+if (calibrationComplete) {
+  const actionBtn = document.getElementById('actionButton');
+  if (actionBtn) {
+    actionBtn.textContent = 'Scan to Complete';
+    actionBtn.onclick = function() {
+      // Open the device linking page (calls pywebview.api.open_link_page() from app.py)
+      pywebview.api.open_link_page();
+    };
+  }
+}}
 function showToast(e){const t=document.getElementById("toast");t.textContent=e,t.classList.add("show"),setTimeout(()=>t.classList.remove("show"),3e3)}
 function updateStatus(text, color){document.getElementById("statusText").textContent=text;const dot=document.getElementById("statusDot");dot.className=color==="green"?"w-4 h-4 rounded-full bg-green-500 glass-dot green pulse":"w-4 h-4 rounded-full bg-blue-500 glass-dot pulse"}
 function resetCalibration(){handDetected=false,waveCount=0,lastHandY=0,waveDirection=0,updateStatus("Waiting for hand...","blue")}
