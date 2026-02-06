@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Scan to Completed For Gestura Home Users</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
+:root {
+    --ios-green: #34C759;
+    --system-background: #FFFFFF;
+    --secondary-background: #F2F2F7;
+    --tertiary-background: #FFFFFF;
+    --label: #000000;
+    --secondary-label: #3C3C43;
+    --ios-gray-4: #D1D1D6;
+    --ios-gray-6: #F2F2F7;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --system-background: #000000;
+        --secondary-background: #1C1C1E;
+        --tertiary-background: #2C2C2E;
+        --label: #FFFFFF;
+        --secondary-label: #EBEBF5;
+        --ios-gray-4: #3A3A3C;
+        --ios-gray-6: #1C1C1E;
+    }
+}
+
+html[data-theme="dark"] {
+    --system-background: #000000;
+    --secondary-background: #1C1C1E;
+    --tertiary-background: #2C2C2E;
+    --label: #FFFFFF;
+    --secondary-label: #EBEBF5;
+    --ios-gray-4: #3A3A3C;
+    --ios-gray-6: #1C1C1E;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+    background: var(--system-background);
+    color: var(--label);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+}
+
+.card {
+    background: var(--tertiary-background);
+    border-radius: 16px;
+    padding: 40px 32px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    animation: fadeInScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .card {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+}
+
+html[data-theme="dark"] .card {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 24px;
+}
+
+.success-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.checkmark-circle {
+    stroke: var(--ios-green);
+    stroke-width: 3;
+    fill: none;
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    animation: stroke-circle 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark-check {
+    stroke: var(--ios-green);
+    stroke-width: 3;
+    fill: none;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke-check 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+}
+
+@keyframes stroke-circle {
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes stroke-check {
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+.title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--label);
+    margin-bottom: 12px;
+    letter-spacing: -0.26px;
+    animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
+    opacity: 0;
+}
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message {
+    font-size: 17px;
+    color: var(--secondary-label);
+    line-height: 1.4;
+    opacity: 0;
+    margin-bottom: 32px;
+    animation: fadeIn 0.5s ease-out 0.5s forwards;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0.8;
+    }
+}
+
+@keyframes fadeInFooter {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0.6;
+    }
+}
+
+.details {
+    background: var(--ios-gray-6);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+    animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.7s forwards;
+    opacity: 0;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 15px;
+}
+
+.detail-label {
+    color: var(--secondary-label);
+}
+
+.detail-value {
+    color: var(--label);
+    font-weight: 600;
+}
+
+.footer-text {
+    font-size: 13px;
+    color: var(--secondary-label);
+    opacity: 0;
+    animation: fadeInFooter 0.5s ease-out 0.9s forwards;
+}
+
+@media (min-width: 768px) {
+    body {
+        background: var(--secondary-background);
+    }
+    
+    .card {
+        padding: 48px 40px;
+    }
+    
+    .success-icon {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .card,
+    .title,
+    .message,
+    .details,
+    .footer-text {
+        opacity: 1 !important;
+    }
+    
+    .checkmark-circle,
+    .checkmark-check {
+        stroke-dashoffset: 0 !important;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <div class="success-icon">
+            <svg viewBox="0 0 52 52">
+                <circle class="checkmark-circle" cx="26" cy="26" r="25"/>
+                <path class="checkmark-check" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+        </div>
+        
+        <h2 class="title">Device Linked</h2>
+        <p class="message">Your device has been successfully authenticated and connected to the session.</p>
+        
+        <div class="details">
+            <div class="detail-row">
+                <span class="detail-label">Status</span>
+                <span class="detail-value">Connected</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Security</span>
+                <span class="detail-value">Encrypted</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Session</span>
+                <span class="detail-value">Active</span>
+            </div>
+        </div>
+        
+        <p class="footer-text">You may close this page</p>
+    </div>
+</div>
+
+<script>
+// Detect and apply dark mode for webview compatibility
+(function() {
+    function applyDarkMode() {
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (prefersDark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+        }
+    }
+    
+    applyDarkMode();
+    
+    if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyDarkMode);
+    }
+})();
+
+// Clear browser history for this page
+(function() {
+    try {
+        // Play success sound
+        const audio = new Audio('/audio/scan_ok.mp3');
+        audio.play().catch(err => {
+            console.log('Audio playback failed:', err);
+        });
+        
+        // Clear history - replace the current entry so back button doesn't work
+        if (window.history && window.history.replaceState) {
+            // Replace current state with this page
+            window.history.replaceState(null, '', window.location.href);
+            
+            // Push a new state and immediately go back to prevent navigation
+            window.history.pushState(null, '', window.location.href);
+            
+            window.addEventListener('popstate', function(event) {
+                // Prevent going back
+                window.history.pushState(null, '', window.location.href);
+            });
+        }
+        
+        // Prevent caching
+        if (window.performance && window.performance.navigation.type === 1) {
+            // Page was reloaded, close it
+            window.close();
+        }
+        
+        // Mark page as visited to prevent reuse
+        if (window.sessionStorage) {
+            sessionStorage.setItem('linked_page_visited', 'true');
+        }
+        
+        console.log('Browser history cleared for security');
+    } catch (error) {
+        console.error('Failed to clear history:', error);
+    }
+})();
+
+// Auto-close page after 10 seconds
+setTimeout(function() {
+    try {
+        window.close();
+    } catch (e) {
+        // If can't close, just log it
+        console.log('Cannot auto-close window');
+    }
+}, 10000);
+</script>
+
+</body>
+</html>
