@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Scan to Complete Set-up For Gestura Home Users</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+    /* iOS/macOS Colors */
+    --ios-blue: #007AFF;
+    --ios-green: #34C759;
+    --ios-gray: #8E8E93;
+    --ios-gray-2: #AEAEB2;
+    --ios-gray-3: #C7C7CC;
+    --ios-gray-4: #D1D1D6;
+    --ios-gray-5: #E5E5EA;
+    --ios-gray-6: #F2F2F7;
+    
+    /* System backgrounds */
+    --system-background: #FFFFFF;
+    --secondary-background: #F2F2F7;
+    --tertiary-background: #FFFFFF;
+    
+    /* Labels */
+    --label: #000000;
+    --secondary-label: #3C3C43;
+    --tertiary-label: #3C3C43;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --system-background: #000000;
+        --secondary-background: #1C1C1E;
+        --tertiary-background: #2C2C2E;
+        --label: #FFFFFF;
+        --secondary-label: #EBEBF5;
+        --tertiary-label: #EBEBF5;
+        --ios-gray-5: #3A3A3C;
+        --ios-gray-6: #1C1C1E;
+    }
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+    background: var(--system-background);
+    color: var(--label);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* iOS Status Bar Space */
+.status-bar-spacer {
+    height: env(safe-area-inset-top);
+    background: var(--system-background);
+}
+
+/* Navigation Bar */
+.navigation-bar {
+    background: var(--system-background);
+    border-bottom: 0.5px solid var(--ios-gray-4);
+    padding: 0 16px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.41px;
+}
+
+/* Main Content */
+.content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Card */
+.card {
+    background: var(--tertiary-background);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card-section {
+    padding: 20px;
+}
+
+.card-section + .card-section {
+    border-top: 0.5px solid var(--ios-gray-4);
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--label);
+    letter-spacing: -0.26px;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    font-size: 15px;
+    color: var(--secondary-label);
+    line-height: 1.4;
+    opacity: 0.8;
+}
+
+/* QR Code */
+.qr-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+    position: relative;
+    min-height: 280px;
+}
+
+.qr-wrapper {
+    background: #FFFFFF;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+    .qr-wrapper {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+}
+
+.qr-image {
+    width: 220px;
+    height: 220px;
+    display: block;
+    border-radius: 8px;
+    transition: opacity 0.3s ease;
+}
+
+/* Success State */
+.success-checkmark {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    display: none;
+}
+
+.success-checkmark svg {
+    width: 100%;
+    height: 100%;
+}
+
+.checkmark-circle {
+    stroke: var(--ios-green);
+    stroke-width: 3;
+    fill: none;
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+}
+
+.checkmark-check {
+    stroke: var(--ios-green);
+    stroke-width: 3;
+    fill: none;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+}
+
+.connected .success-checkmark {
+    display: block;
+}
+
+.connected .success-checkmark .checkmark-circle {
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.connected .success-checkmark .checkmark-check {
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.4s forwards;
+}
+
+@keyframes stroke {
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+.connected .qr-wrapper {
+    opacity: 0;
+    transform: scale(0.95);
+}
+
+/* Status */
+.status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+}
+
+.status-label {
+    font-size: 15px;
+    color: var(--label);
+}
+
+.status-value {
+    font-size: 15px;
+    color: var(--secondary-label);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ios-blue);
+}
+
+.status-indicator.pulsing {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.4;
+    }
+}
+
+.connected .status-indicator {
+    background: var(--ios-green);
+    animation: none;
+}
+
+/* Timer */
+.timer {
+    color: var(--ios-blue);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Security Notice */
+.security-notice {
+    background: var(--ios-gray-6);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.security-text {
+    font-size: 13px;
+    color: var(--secondary-label);
+    line-height: 1.4;
+}
+
+/* Desktop Styles */
+@media (min-width: 768px) {
+    body {
+        background: var(--secondary-background);
+    }
+    
+    .navigation-bar {
+        display: none;
+    }
+    
+    .content {
+        padding: 60px 20px;
+    }
+    
+    .container {
+        max-width: 520px;
+    }
+    
+    .card {
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .card {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        }
+    }
+    
+    .card-section {
+        padding: 32px;
+    }
+    
+    .title {
+        font-size: 28px;
+    }
+    
+    .subtitle {
+        font-size: 17px;
+    }
+    
+    .qr-container {
+        min-height: 320px;
+    }
+    
+    .qr-wrapper {
+        padding: 20px;
+    }
+    
+    .qr-image {
+        width: 260px;
+        height: 260px;
+    }
+    
+    .success-checkmark {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="status-bar-spacer"></div>
+
+<nav class="navigation-bar">
+    <h1 class="nav-title">Scan to Complete Set-up</h1>
+</nav>
+
+<main class="content">
+    <div class="container">
+        <div id="card" class="card">
+            <div class="card-section">
+                <div class="header">
+                    <h2 class="title" id="title">Scan to Connect</h2>
+                    <p class="subtitle" id="subtitle">Use your device camera to scan the QR code below</p>
+                    <p class="subtitle" style="margin-top: 8px; font-size: 13px;">Make sure your device is on the same network</p>
+                </div>
+
+                <div class="qr-container">
+                    <div class="success-checkmark">
+                        <svg viewBox="0 0 52 52">
+                            <circle class="checkmark-circle" cx="26" cy="26" r="25"/>
+                            <path class="checkmark-check" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                        </svg>
+                    </div>
+                    <div class="qr-wrapper">
+                        <img class="qr-image" id="qr" src="/qr/{{ session_id }}" alt="QR Code">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-section">
+                <div class="status-row">
+                    <span class="status-label">Status</span>
+                    <span class="status-value">
+                        <span class="status-indicator pulsing"></span>
+                        <span id="status">Waiting</span>
+                    </span>
+                </div>
+                <div class="status-row">
+                    <span class="status-label">Expires in</span>
+                    <span class="status-value">
+                        <span class="timer" id="timer">5:00</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="card-section">
+                <div class="security-notice">
+                    <p class="security-text">
+                        This session uses proper encryption and will automatically expire after 5 minutes.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+let expiryTime = 300;
+let hasPlayedSound = false;
+
+// Function to play audio
+function playSound(soundFile) {
+    if (hasPlayedSound) return; // Only play once
+    
+    try {
+        const audio = new Audio(`/audio/${soundFile}`);
+        audio.play().catch(err => {
+            console.error(`Failed to play ${soundFile}:`, err);
+        });
+        hasPlayedSound = true;
+    } catch (error) {
+        console.error(`Error creating audio for ${soundFile}:`, error);
+    }
+}
+
+function updateTimer() {
+    const minutes = Math.floor(expiryTime / 60);
+    const seconds = expiryTime % 60;
+    document.getElementById('timer').textContent = 
+        `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    
+    if (expiryTime > 0) {
+        expiryTime--;
+    } else {
+        clearInterval(timerInterval);
+        clearInterval(poll);
+        document.getElementById('status').textContent = 'Expired';
+        document.querySelector('.status-indicator').classList.remove('pulsing');
+        
+        // Play error sound on timeout
+        playSound('scan_error.mp3');
+    }
+}
+
+const timerInterval = setInterval(updateTimer, 1000);
+
+async function checkStatus() {
+    try {
+        const res = await fetch(`/status/{{ session_id }}`);
+        
+        if (res.status === 429) {
+            document.getElementById('status').textContent = 'Rate limited';
+            return;
+        }
+        
+        const data = await res.json();
+        
+        if (data.linked) {
+            const card = document.getElementById("card");
+            card.classList.add("connected");
+            
+            document.getElementById("title").textContent = "Connected";
+            document.getElementById("subtitle").textContent = "Your device has been successfully linked";
+            document.getElementById("status").textContent = "Active";
+            
+            clearInterval(poll);
+            clearInterval(timerInterval);
+            
+            // Play success sound
+            playSound('scan_ok.mp3');
+        }
+    } catch (error) {
+        console.error("Status check failed:", error);
+    }
+}
+
+const poll = setInterval(checkStatus, 1500);
+checkStatus();
+</script>
+
+</body>
+</html>
